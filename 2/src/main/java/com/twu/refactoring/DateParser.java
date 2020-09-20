@@ -22,12 +22,23 @@ public class DateParser {
      *                          2012-06-17TZ is 17th June 2012 - 00:00 in UTC TimeZone
      *                          2012-06-17T15:00Z is 17th June 2012 - 15:00 in UTC TimeZone
      */
+
     public DateParser(String dateAndTimeString) {
         this.dateAndTimeString = dateAndTimeString;
     }
 
     public Date parse() {
-        int year, month, date, hour, minute;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        calendar.set(getYear(), getMonth() - 1, getDate(), getHour(), getMinute(), 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+    public int getYear(){
+        int year;
+        if (year < 2000 || year > 2012)
+            throw new IllegalArgumentException("Year cannot be less than 2000 or more than 2012");
 
         try {
             String yearString = dateAndTimeString.substring(0, 4);
@@ -37,8 +48,14 @@ public class DateParser {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Year is not an integer");
         }
-        if (year < 2000 || year > 2012)
-            throw new IllegalArgumentException("Year cannot be less than 2000 or more than 2012");
+        return  year;
+
+    }
+
+    public int getMonth(){
+        int month;
+        if (month < 1 || month > 12)
+            throw new IllegalArgumentException("Month cannot be less than 1 or more than 12");
 
         try {
             String monthString = dateAndTimeString.substring(5, 7);
@@ -48,8 +65,13 @@ public class DateParser {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Month is not an integer");
         }
-        if (month < 1 || month > 12)
-            throw new IllegalArgumentException("Month cannot be less than 1 or more than 12");
+        return month;
+    }
+
+    public int getDate(){
+        int date;
+        if (date < 1 || date > 31)
+            throw new IllegalArgumentException("Date cannot be less than 1 or more than 31");
 
         try {
             String dateString = dateAndTimeString.substring(8, 10);
@@ -59,13 +81,19 @@ public class DateParser {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Date is not an integer");
         }
-        if (date < 1 || date > 31)
-            throw new IllegalArgumentException("Date cannot be less than 1 or more than 31");
+        return  date;
 
+    }
+
+    public int getHour(){
+        int hour;
         if (dateAndTimeString.substring(11, 12).equals("Z")) {
             hour = 0;
             minute = 0;
         } else {
+
+            if (hour < 0 || hour > 23)
+                throw new IllegalArgumentException("Hour cannot be less than 0 or more than 23");
             try {
                 String hourString = dateAndTimeString.substring(11, 13);
                 hour = Integer.parseInt(hourString);
@@ -74,9 +102,17 @@ public class DateParser {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Hour is not an integer");
             }
-            if (hour < 0 || hour > 23)
-                throw new IllegalArgumentException("Hour cannot be less than 0 or more than 23");
+        }
+        return hour;
+    }
 
+
+
+    public int getMinute() {
+        int minute;
+        if (dateAndTimeString.substring(11, 12).equals("Z")) {
+            minute = 0;
+        } else {
             try {
                 String minuteString = dateAndTimeString.substring(14, 16);
                 minute = Integer.parseInt(minuteString);
@@ -87,13 +123,9 @@ public class DateParser {
             }
             if (minute < 0 || minute > 59)
                 throw new IllegalArgumentException("Minute cannot be less than 0 or more than 59");
-
         }
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-        calendar.set(year, month - 1, date, hour, minute, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTime();
+        return minute;
     }
+
+
 }

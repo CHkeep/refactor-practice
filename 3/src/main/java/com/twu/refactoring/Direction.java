@@ -1,6 +1,11 @@
 package com.twu.refactoring;
 
 public class Direction {
+    public static final char NORTH = 'N';
+    public static final char SOUTH = 'S';
+    public static final char EAST = 'E';
+    public static final char WEST = 'W';
+
     private final char direction;
 
     public Direction(char direction) {
@@ -9,13 +14,13 @@ public class Direction {
 
     public Direction turnRight() {
         switch (direction) {
-            case 'N':
+            case NORTH:
                 return new Direction('E');
-            case 'S':
+            case SOUTH:
                 return new Direction('W');
-            case 'E':
+            case EAST:
                 return new Direction('N');
-            case 'W':
+            case WEST:
                 return new Direction('S');
             default:
                 throw new IllegalArgumentException();
@@ -24,13 +29,13 @@ public class Direction {
 
     public Direction turnLeft() {
         switch (direction) {
-            case 'N':
+            case WEST:
                 return new Direction('W');
-            case 'S':
+            case EAST:
                 return new Direction('E');
-            case 'E':
+            case SOUTH:
                 return new Direction('N');
-            case 'W':
+            case NORTH:
                 return new Direction('S');
             default:
                 throw new IllegalArgumentException();
